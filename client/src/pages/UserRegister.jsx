@@ -1,14 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import MapPicker from '../components/MapPicker.jsx';
 import { api } from '../lib/api.js';
 import { useAuth } from '../state/AuthContext.jsx';
+
+const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6Lcg2D4sAAAAAPadVQ3DtJzFjb4kwy_qtTsyyeIP';
 
 export default function UserRegister() {
   const { setUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -33,7 +37,8 @@ export default function UserRegister() {
     setError('');
     setLoading(true);
     try {
-      const { user } = await api.registerUser(form);
+      if (!recaptchaToken) throw new Error('Please complete reCAPTCHA');
+      const { user } = await api.registerUser({ ...form, recaptchaToken });
       setUser(user);
       navigate('/user/dashboard');
     } catch (err) {
@@ -70,6 +75,11 @@ export default function UserRegister() {
             <label>Longitude<input value={form.longitude} readOnly /></label>
           </div>
         </div>
+        {recaptchaSiteKey && (
+          <div className="wide" style={{ marginTop: '0.5rem' }}>
+            <ReCAPTCHA sitekey={recaptchaSiteKey} onChange={setRecaptchaToken} />
+          </div>
+        )}
         {error && <div className="error">{error}</div>}
         <button className="primary" type="submit" disabled={loading}>{loading ? 'Saving…' : 'Register & Go'}</button>
       </form>

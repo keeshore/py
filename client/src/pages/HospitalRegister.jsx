@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ReCAPTCHA from 'react-google-recaptcha';
 import MapPicker from '../components/MapPicker.jsx';
 import { api } from '../lib/api.js';
 import { useAuth } from '../state/AuthContext.jsx';
+
+const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6Lcg2D4sAAAAAPadVQ3DtJzFjb4kwy_qtTsyyeIP';
 
 export default function HospitalRegister() {
   const { setHospital } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState('');
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -32,7 +36,8 @@ export default function HospitalRegister() {
     setError('');
     setLoading(true);
     try {
-      const { hospital, doctor } = await api.registerHospital(form);
+      if (!recaptchaToken) throw new Error('Please complete reCAPTCHA');
+      const { hospital, doctor } = await api.registerHospital({ ...form, recaptchaToken });
       setHospital({ ...hospital, doctor });
       navigate('/hospital/dashboard');
     } catch (err) {
@@ -83,6 +88,11 @@ export default function HospitalRegister() {
             <label>Longitude<input value={form.longitude} readOnly /></label>
           </div>
         </div>
+        {recaptchaSiteKey && (
+          <div className="wide" style={{ marginTop: '0.5rem' }}>
+            <ReCAPTCHA sitekey={recaptchaSiteKey} onChange={setRecaptchaToken} />
+          </div>
+        )}
         {error && <div className="error">{error}</div>}
         <button className="primary" type="submit" disabled={loading}>{loading ? 'Saving…' : 'Register Hospital'}</button>
       </form>

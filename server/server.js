@@ -7,9 +7,30 @@ const { run, get, all, getDb } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
+const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
 
 app.use(cors());
 app.use(express.json());
+
+async function verifyRecaptcha(token) {
+  if (!RECAPTCHA_SECRET) return true; // if not configured, allow by default
+  if (!token) return false;
+  try {
+    const params = new URLSearchParams();
+    params.append('secret', RECAPTCHA_SECRET);
+    params.append('response', token);
+    const resp = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString()
+    });
+    const data = await resp.json();
+    return Boolean(data?.success);
+  } catch (err) {
+    console.error('reCAPTCHA verify failed', err.message);
+    return false;
+  }
+}
 
 const haversineKm = (lat1, lon1, lat2, lon2) => {
   const toRad = deg => (deg * Math.PI) / 180;
@@ -33,7 +54,9 @@ app.get('/api/health', (_req, res) => {
 
 app.post('/api/users/register', async (req, res) => {
   try {
-    const { name, email, mobile, password, height, weight, dob, address, latitude, longitude } = req.body;
+    const { name, email, mobile, password, height, weight, dob, address, latitude, longitude, recaptchaToken } = req.body;
+    const captchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!captchaOk) return res.status(400).json({ error: 'reCAPTCHA failed' });
     if (!name || !email || !password) return res.status(400).json({ error: 'Missing required fields' });
     const exists = await get('SELECT id FROM users WHERE email = ?', { [1]: email });
     if (exists) return res.status(400).json({ error: 'Email already registered' });
@@ -52,7 +75,9 @@ app.post('/api/users/register', async (req, res) => {
 
 app.post('/api/users/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, recaptchaToken } = req.body;
+    const captchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!captchaOk) return res.status(400).json({ error: 'reCAPTCHA failed' });
     const user = await get('SELECT * FROM users WHERE email = ?', { [1]: email });
     if (!user) return res.status(401).json({ error: 'Invalid credentials' });
     const ok = await bcrypt.compare(password, user.password_hash);
@@ -105,8 +130,11 @@ app.post('/api/hospitals/register', async (req, res) => {
       eveningTo,
       address,
       latitude,
-      longitude
+      longitude,
+      recaptchaToken
     } = req.body;
+    const captchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!captchaOk) return res.status(400).json({ error: 'reCAPTCHA failed' });
     if (!name || !email || !password || !doctorName) return res.status(400).json({ error: 'Missing required fields' });
     const exists = await get('SELECT id FROM hospitals WHERE email = $email', { $email: email });
     if (exists) return res.status(400).json({ error: 'Email already registered' });
@@ -151,7 +179,9 @@ app.post('/api/hospitals/register', async (req, res) => {
 
 app.post('/api/hospitals/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, recaptchaToken } = req.body;
+    const captchaOk = await verifyRecaptcha(recaptchaToken);
+    if (!captchaOk) return res.status(400).json({ error: 'reCAPTCHA failed' });
     const hospital = await get('SELECT * FROM hospitals WHERE email = $email', { $email: email });
     if (!hospital) return res.status(401).json({ error: 'Invalid credentials' });
     const ok = await bcrypt.compare(password, hospital.password_hash);
