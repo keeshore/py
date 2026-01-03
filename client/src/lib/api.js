@@ -1,4 +1,5 @@
-const base = import.meta.env.VITE_API_BASE || '/api';
+// Prefer env; fallback to deployed Render API to avoid wrong base causing 404s
+const base = (import.meta.env.VITE_API_BASE || 'https://py-backend-w56c.onrender.com/api').replace(/\/$/, '');
 
 async function request(path, options = {}) {
   const res = await fetch(`${base}${path}`, {
