@@ -82,7 +82,7 @@ Frontend will run on: `http://localhost:5173`
 Server (`server/.env`):
 ```
 PORT=4000
-DB_PATH=./data.db
+DB_PATH=/var/data/data.db
 GEMINI_API_KEY=your_gemini_key
 RECAPTCHA_SECRET=your_recaptcha_secret
 ```
