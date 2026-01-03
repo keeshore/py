@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title mb-3">Register Hospital / Clinic</h2>
+        <p class="text-muted">Creates hospital + doctor profile with geolocation.</p>
+        <div id="hospital-register-alert" class="alert d-none" role="alert"></div>
+        <form id="hospital-register-form" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Hospital Name</label>
+            <input name="name" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Login Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Password</label>
+            <input name="password" type="password" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Emergency Service</label>
+            <select name="emergency" class="form-select">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Morning From</label>
+            <input name="morningFrom" type="time" class="form-control" value="08:00">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Morning To</label>
+            <input name="morningTo" type="time" class="form-control" value="12:00">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Evening From</label>
+            <input name="eveningFrom" type="time" class="form-control" value="16:00">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Evening To</label>
+            <input name="eveningTo" type="time" class="form-control" value="20:00">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Address</label>
+            <input name="address" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Latitude</label>
+            <input name="latitude" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Longitude</label>
+            <input name="longitude" class="form-control" readonly>
+          </div>
+          <div class="col-12">
+            <button id="hospital-location-btn" type="button" class="btn btn-outline-primary btn-sm">Use current location</button>
+          </div>
+          <hr class="mt-2 mb-2">
+          <div class="col-md-6">
+            <label class="form-label">Doctor Name</label>
+            <input name="doctorName" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Doctor Qualification</label>
+            <input name="doctorQualification" class="form-control" placeholder="MBBS, MD">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Doctor Specialization</label>
+            <input name="doctorSpecialization" class="form-control" placeholder="Eye, ENT, General">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Doctor Description</label>
+            <textarea name="doctorDescription" class="form-control" rows="2">Experienced specialist ready to help.</textarea>
+          </div>
+          <div id="hospital-register-recaptcha" class="col-12"></div>
+          <div class="col-12">
+            <button class="btn btn-success" type="submit">Register Hospital</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

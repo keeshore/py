@@ -1,6 +1,6 @@
 version: '3.9'
 services:
-  server:
+  web:
     build: ./server
     ports:
       - "4000:4000"
@@ -9,17 +9,9 @@ services:
       - DB_PATH=/data/data.db
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - RECAPTCHA_SECRET=${RECAPTCHA_SECRET:-}
+      - RECAPTCHA_SITE_KEY=${RECAPTCHA_SITE_KEY:-}
     volumes:
       - server-data:/data
-  client:
-    build:
-      context: ./client
-      args:
-        - VITE_API_BASE=${VITE_API_BASE:-https://py-backend-w56c.onrender.com/api}
-        - VITE_RECAPTCHA_SITE_KEY=${VITE_RECAPTCHA_SITE_KEY:-}
-    ports:
-      - "5173:80"
-    depends_on:
-      - server
+
 volumes:
   server-data:

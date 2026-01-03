@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <p class="text-muted mb-1">QR Scanner</p>
+        <h2 class="card-title">Offline → Online booking</h2>
+        <div id="qr-alert" class="alert d-none" role="alert"></div>
+        <div class="mb-3">
+          <label class="form-label">QR URL / Code</label>
+          <input id="qr-input" class="form-control" placeholder="https://app/qr?h=HOSP123">
+        </div>
+        <button id="qr-open" class="btn btn-primary" type="button">Open Hospital Page</button>
+        <p id="qr-message" class="text-muted mt-2"></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

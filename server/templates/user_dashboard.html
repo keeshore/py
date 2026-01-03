@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <p class="text-muted mb-1">User Dashboard</p>
+    <h2 class="mb-0">Welcome back</h2>
+  </div>
+  <div class="d-flex gap-2 flex-wrap">
+    <a class="btn btn-outline-primary" href="/user/book">Book Appointment</a>
+    <a class="btn btn-outline-secondary" href="/user/rebook">Re-Appointment</a>
+    <a class="btn btn-outline-info" href="/user/firstaid">First Aid AI</a>
+    <a class="btn btn-outline-warning" href="/user/qr">QR Scanner</a>
+  </div>
+</div>
+<div id="user-dashboard-alert" class="alert d-none" role="alert"></div>
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Profile Snapshot</h5>
+        <dl class="row mb-0" id="user-summary"></dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Edit Profile</h5>
+        <form id="user-profile-form" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Full Name</label>
+            <input name="name" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input name="email" type="email" class="form-control" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Mobile</label>
+            <input name="mobile" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Date of Birth</label>
+            <input name="dob" type="date" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Height (cm)</label>
+            <input name="height" type="number" step="0.1" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Weight (kg)</label>
+            <input name="weight" type="number" step="0.1" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Address</label>
+            <input name="address" class="form-control">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Latitude</label>
+            <input name="latitude" class="form-control" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Longitude</label>
+            <input name="longitude" class="form-control" readonly>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button id="user-dash-location-btn" type="button" class="btn btn-outline-primary btn-sm">Use current location</button>
+            <span id="user-dash-location-hint" class="text-muted small"></span>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Save changes</button>
+            <button id="user-profile-reset" class="btn btn-outline-secondary" type="button">Reset</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

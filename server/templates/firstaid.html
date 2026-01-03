@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <p class="text-muted mb-1">First Aid (Gemini)</p>
+        <h2 class="card-title">Immediate guidance</h2>
+        <div id="firstaid-alert" class="alert d-none" role="alert"></div>
+        <div class="mb-3">
+          <label class="form-label">Describe the problem</label>
+          <textarea id="firstaid-prompt" class="form-control" rows="4" placeholder="e.g., chest pain, dizziness"></textarea>
+        </div>
+        <button id="firstaid-submit" class="btn btn-primary" type="button">Get First Aid</button>
+        <div id="firstaid-response" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card">
+      <div class="card-body">
+        <p class="text-muted mb-1">Hospital Profile</p>
+        <h2 id="hospital-view-name" class="card-title">Loading…</h2>
+        <p id="hospital-view-address" class="text-muted"></p>
+        <div class="mb-3" id="hospital-view-meta"></div>
+        <div id="hospital-view-doctor" class="mb-3"></div>
+        <a class="btn btn-primary" href="/user/book">Book an appointment</a>
+        <p class="text-muted mt-3">Scan from QR redirects here. Hospital ID: <span id="hospital-view-id" data-hospital-id="{{ hospital_id }}">{{ hospital_id }}</span></p>
+        <div id="hospital-view-alert" class="alert d-none" role="alert"></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

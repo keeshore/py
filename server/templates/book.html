@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <div>
+    <p class="text-muted mb-1">Step-by-step booking</p>
+    <h2 class="mb-0">Book Appointment</h2>
+  </div>
+  <div class="text-muted small">Uses your saved location (if available) to sort nearby doctors.</div>
+</div>
+<div id="book-alert" class="alert d-none" role="alert"></div>
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Preferences</h5>
+        <form id="book-form" class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Date</label>
+            <input name="date" type="date" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Slot</label>
+            <select name="slot" class="form-select">
+              <option value="">Any</option>
+              <option value="Morning">Morning</option>
+              <option value="Evening">Evening</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Specialization</label>
+            <select name="reason" class="form-select">
+              <option>General</option>
+              <option>Eye</option>
+              <option>ENT</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Search hospital/doctor</label>
+            <input name="search" class="form-control" placeholder="City Hospital, Dr. Rao, ENT">
+          </div>
+          <div class="col-12">
+            <button class="btn btn-primary w-100" type="submit">Search Doctors</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Matches</h5>
+        <div id="book-results" class="row g-3"></div>
+        <p id="book-empty" class="text-muted mb-0">No results yet. Run a search to see nearby doctors.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Describe the problem</h5>
+        <textarea id="book-problem" class="form-control" rows="3" placeholder="Short description"></textarea>
+        <button id="book-confirm" class="btn btn-success mt-2" type="button">Confirm Appointment</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

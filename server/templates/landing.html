@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center py-4">
+  <p class="text-muted mb-1">Doctor Appointment Web Application</p>
+  <h1 class="display-5 fw-bold">PulseCare</h1>
+  <p class="lead text-secondary">Book doctors, manage hospitals, and get first-aid tips instantly.</p>
+  <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+    <a class="btn btn-primary" href="/user/register">Patient Register</a>
+    <a class="btn btn-outline-light" href="/user/login">Patient Login</a>
+    <a class="btn btn-success" href="/hospital/register">Hospital Register</a>
+    <a class="btn btn-outline-success" href="/hospital/login">Hospital Login</a>
+  </div>
+</div>
+<div class="row g-3 mt-4">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Patients</h5>
+        <p class="text-muted">Create profile, update vitals, book and rebook appointments, and ask first-aid questions.</p>
+        <a class="btn btn-link p-0" href="/user/dashboard">Go to dashboard</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Hospitals</h5>
+        <p class="text-muted">Register clinic, manage schedules, edit doctor profile, and view appointments.</p>
+        <a class="btn btn-link p-0" href="/hospital/dashboard">Go to dashboard</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">Doctors</h5>
+        <p class="text-muted">Track queue, update statuses, and use AI assist for triage and counseling.</p>
+        <a class="btn btn-link p-0" href="/doctor/dashboard">Go to doctor view</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

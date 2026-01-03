@@ -1,131 +1,83 @@
-# PulseCare - Doctor Appointment Web Application
+# PulseCare - Flask Edition
 
 ## Project Overview
-A full-stack Doctor Appointment Web Application with clean architecture separation.
+Full-stack doctor appointment application rebuilt on **Python + Flask** with a Bootstrap-powered HTML/CSS frontend. REST API and pages are served from the same Flask app backed by SQLite.
 
 ## Tech Stack
-- **Frontend**: React + Vite + HTML + CSS (Dark theme, high contrast)
-- **Backend**: Node.js + Express (REST API)
-- **Database**: SQLite3
+- **Frontend**: Server-rendered HTML + Bootstrap 5 + custom CSS
+- **Backend**: Python 3 + Flask + Flask-Cors
+- **Database**: SQLite3 (file-based)
 
 ## Project Structure
 ```
 py/
-├── client/                 # Frontend React application
-│   ├── src/
-│   │   ├── main.jsx       # App entry point
-│   │   ├── App.jsx        # Main app component
-│   │   ├── styles.css     # Dark theme styles
-│   │   ├── components/    # Reusable components
-│   │   ├── pages/         # Page components
-│   │   ├── state/         # State management
-│   │   └── lib/           # Utility functions
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-│
-├── server/                 # Backend API
-│   ├── server.js          # Express server
-│   ├── db.js              # SQLite3 database setup
-│   ├── package.json
-│   └── data.db            # SQLite database file (auto-generated)
-│
-└── README.md              # This file
+├── server/
+│   ├── app.py             # Flask app with REST API + page routes
+│   ├── db.py              # SQLite helper + schema bootstrap
+│   ├── requirements.txt   # Python dependencies
+│   ├── templates/         # Jinja2 HTML pages
+│   └── static/            # CSS/JS assets (Bootstrap theme overrides)
+├── client/                # Legacy React app (unused in Flask flow)
+└── README.md
 ```
 
-## Database Schema
-The SQLite3 database includes tables for:
-- **users**: Patient information
-- **hospitals**: Hospital/clinic information
-- **doctors**: Doctor profiles
-- **appointments**: Appointment bookings
-- **firstaid_chats**: Chat history (optional feature)
+### Database Schema
+Tables remain unchanged: `users`, `hospitals`, `doctors`, `appointments`, `firstaid_chats`.
 
 ## Setup Instructions
 
 ### Prerequisites
-- Node.js (v16 or higher)
-- npm or yarn
+- Python 3.10+
+- pip
 
-### Installation
-
-1. **Install Backend Dependencies**
+### Install & Run
 ```bash
 cd server
-npm install
+python -m venv .venv
+.venv\Scripts\activate   # On Windows
+pip install -r requirements.txt
+python app.py             # Runs on http://localhost:4000
 ```
 
-2. **Install Frontend Dependencies**
-```bash
-cd client
-npm install
-```
-
-### Running the Application
-
-1. **Start the Backend Server**
-```bash
-cd server
-npm run dev
-```
-Server will run on: `http://localhost:4000`
-
-2. **Start the Frontend (in a new terminal)**
-```bash
-cd client
-npm run dev
-```
-Frontend will run on: `http://localhost:5173`
-
-### Environment Variables
-
-Server (`server/.env`):
+### Environment Variables (server/.env)
 ```
 PORT=4000
-DB_PATH=/var/data/data.db
+DB_PATH=./data.db
 GEMINI_API_KEY=your_gemini_key
 RECAPTCHA_SECRET=your_recaptcha_secret
+RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+API_BASE=/api
 ```
+- If `RECAPTCHA_SECRET` is unset, verification is skipped.
+- `RECAPTCHA_SITE_KEY` populates widgets on forms.
 
-Client (`client/.env`):
-```
-VITE_API_BASE=https://py-backend-w56c.onrender.com/api
-VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
-VITE_GOOGLE_MAPS_API_KEY=your_maps_key
-```
+## API Endpoints (unchanged semantics)
+- `GET /api/health`
+- `POST /api/users/register`
+- `POST /api/users/login`
+- `GET /api/users/:id`
+- `PUT /api/users/:id`
+- `POST /api/hospitals/register`
+- `POST /api/hospitals/login`
+- `GET /api/hospitals/:id`
+- `PUT /api/hospitals/:id`
+- `PUT /api/doctors/:id`
+- `GET /api/doctors/search`
+- `POST /api/appointments`
+- `GET /api/appointments`
+- `GET /api/appointments/today`
+- `PUT /api/appointments/:id/cancel`
+- `PUT /api/appointments/:id/get-in`
+- `PUT /api/appointments/:id/complete`
+- `POST /api/firstaid`
 
-## API Endpoints
-The REST API is ready with the following structure:
-- `GET /api/health` - Health check endpoint
-- `POST /api/users/register` - User registration
-- `POST /api/users/login` - User login
-- `POST /api/hospitals/register` - Hospital registration
-- `POST /api/hospitals/login` - Hospital login
-- Additional endpoints for appointments, doctors, etc.
+## Frontend Pages
+- `/` landing
+- `/user/register`, `/user/login`, `/user/dashboard`, `/user/book`, `/user/rebook`, `/user/firstaid`, `/user/qr`
+- `/hospital/register`, `/hospital/login`, `/hospital/dashboard`, `/doctor/dashboard`
+- `/hospital/<id>` lightweight public hospital view for QR links
 
-## Docker Deployment (one command)
-
-Prereqs: Docker + Docker Compose.
-
-```
-docker compose up --build
-```
-
-What it does:
-- Builds server (Express + SQLite) and exposes `4000`.
-- Builds client (Vite -> static) and serves via Nginx on host port `5173`.
-- Uses volume `server-data` to persist `data.db` at `/data/data.db` inside the server container.
-
-Environment overrides for Compose (optional):
-```
-GEMINI_API_KEY=...
-RECAPTCHA_SECRET=...
-VITE_API_BASE=https://py-backend-w56c.onrender.com/api
-VITE_RECAPTCHA_SITE_KEY=...
-```
-
-## Production Notes
-- Use HTTPS for ReCAPTCHA and API calls.
-- Keep secrets in environment variables, not in source.
-- If you move to Postgres, replace `sql.js` with a server DB client and remove the file-based DB.
-- For static hosting without Docker, run `npm run build` in `client` and deploy `client/dist` to a CDN; point `VITE_API_BASE` at your deployed API.
+## Notes
+- SQLite file lives at `DB_PATH`; schema auto-creates on first request.
+- Gemini integration is optional; missing API key returns a friendly message.
+- Legacy React + Node assets remain for reference but Flask stack is the supported path now.
