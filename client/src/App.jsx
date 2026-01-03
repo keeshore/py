@@ -27,7 +27,7 @@ export default function App() {
   return (
     <div className="page-shell">
       <header className="topbar">
-        <div className="logo">PulseCare</div>
+        <div className="logo">CodeZen</div>
         <div className="top-actions">
           {user && <span className="chip">User: {user.name}</span>}
           {hospital && <span className="chip">Hospital: {hospital.name}</span>}
