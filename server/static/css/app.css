@@ -3,7 +3,7 @@
 }
 
 body { 
-  background: #575e7e; 
+  background: #34384c; 
   color: #ffffff;
   font-size: 15px;
   line-height: 1.6;
@@ -19,7 +19,7 @@ h1, h2, h3, h4, h5, h6 {
 .card { 
   background: #3a3e5d; 
   border-color: #2d3561;
-  box-shadow: 0 2px 8px rgba(62, 58, 58, 0.5);
+  box-shadow: 0 2px 8px rgba(30, 26, 26, 0.5);
 }
 
 .card-title { 
@@ -42,7 +42,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control, .form-select, .form-control:focus, .form-select:focus { 
-  background: #494f74; 
+  background: #464b67; 
   color: #ffffff;
   border-color: #323648;
   font-size: 14px;
@@ -78,7 +78,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   font-weight: 500;
   color: #ffffff;
-  background-color: #3c415a;
+  background-color: #383c50;
 }
 
 .text-muted {
@@ -90,7 +90,7 @@ h1, h2, h3, h4, h5, h6 {
 textarea.form-control { 
   min-height: 120px;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, monospace;
-  background: #484c66;
+  background: #3d415b;
   color: #ffffff;
 }
 
