@@ -77,11 +77,21 @@ npm run dev
 ```
 Frontend will run on: `http://localhost:5173`
 
-### Environment Variables (Optional)
-Create a `.env` file in the `server/` directory:
+### Environment Variables
+
+Server (`server/.env`):
 ```
 PORT=4000
 DB_PATH=./data.db
+GEMINI_API_KEY=your_gemini_key
+RECAPTCHA_SECRET=your_recaptcha_secret
+```
+
+Client (`client/.env`):
+```
+VITE_API_BASE=http://localhost:4000/api
+VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
+VITE_GOOGLE_MAPS_API_KEY=your_maps_key
 ```
 
 ## API Endpoints
@@ -93,27 +103,29 @@ The REST API is ready with the following structure:
 - `POST /api/hospitals/login` - Hospital login
 - Additional endpoints for appointments, doctors, etc.
 
-## Features Status
-✅ Project structure
-✅ SQLite3 database connection
-✅ REST API framework
-✅ Dark theme UI
-✅ Basic routing setup
-⏳ Full feature implementation (pending)
+## Docker Deployment (one command)
 
-## Development Notes
-- The database file (`data.db`) is auto-generated on first run
-- Frontend uses Vite for fast development
-- Backend uses nodemon for auto-reload during development
-- CORS is enabled for local development
+Prereqs: Docker + Docker Compose.
 
-## Next Steps
-- Implement full authentication flow
-- Add appointment booking logic
-- Implement search and filtering
-- Add doctor management
-- Integrate map features
-- Add real-time notifications
+```
+docker compose up --build
+```
 
----
-**Current Status**: Project scaffold ready for development
+What it does:
+- Builds server (Express + SQLite) and exposes `4000`.
+- Builds client (Vite -> static) and serves via Nginx on host port `5173`.
+- Uses volume `server-data` to persist `data.db` at `/data/data.db` inside the server container.
+
+Environment overrides for Compose (optional):
+```
+GEMINI_API_KEY=...
+RECAPTCHA_SECRET=...
+VITE_API_BASE=http://localhost:4000/api
+VITE_RECAPTCHA_SITE_KEY=...
+```
+
+## Production Notes
+- Use HTTPS for ReCAPTCHA and API calls.
+- Keep secrets in environment variables, not in source.
+- If you move to Postgres, replace `sql.js` with a server DB client and remove the file-based DB.
+- For static hosting without Docker, run `npm run build` in `client` and deploy `client/dist` to a CDN; point `VITE_API_BASE` at your deployed API.
