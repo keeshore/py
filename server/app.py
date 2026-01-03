@@ -207,16 +207,6 @@ def hospital_dashboard_page():
     )
 
 
-@app.route("/doctor/dashboard")
-def doctor_dashboard_page():
-    return render_template(
-        "doctor_dashboard.html",
-        page="doctor-dashboard",
-        api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
-    )
-
-
 @app.route("/hospital/<hospital_id>")
 def hospital_public_page(hospital_id: str):
     return render_template(
@@ -346,13 +336,12 @@ def register_hospital():
     captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
     if not captcha_ok:
         return jsonify({"error": "reCAPTCHA failed"}), 400
-    if not data.get("name") or not data.get("email") or not data.get("password") or not data.get("doctorName"):
+    if not data.get("name") or not data.get("email") or not data.get("password"):
         return jsonify({"error": "Missing required fields"}), 400
     exists = get_one("SELECT id FROM hospitals WHERE email = ?", (data.get("email"),))
     if exists:
         return jsonify({"error": "Email already registered"}), 400
     hospital_id = str(uuid.uuid4())
-    doctor_id = str(uuid.uuid4())
     password_hash = generate_password_hash(data.get("password"))
     run(
         """
@@ -374,26 +363,8 @@ def register_hospital():
             data.get("longitude"),
         ),
     )
-    run(
-        """
-        INSERT INTO doctors (id, hospital_id, name, qualification, specialization, description, latitude, longitude)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            doctor_id,
-            hospital_id,
-            data.get("doctorName"),
-            data.get("doctorQualification"),
-            data.get("doctorSpecialization"),
-            data.get("doctorDescription"),
-            data.get("latitude"),
-            data.get("longitude"),
-        ),
-    )
     hospital = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
-    doctor = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.post("/api/hospitals/login")
@@ -407,9 +378,7 @@ def login_hospital():
         return jsonify({"error": "Invalid credentials"}), 401
     if not check_password_hash(hospital["password_hash"], data.get("password", "")):
         return jsonify({"error": "Invalid credentials"}), 401
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital["id"],))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.get("/api/hospitals/<hospital_id>")
@@ -417,9 +386,7 @@ def get_hospital(hospital_id: str):
     hospital = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
     if not hospital:
         return jsonify({"error": "Hospital not found"}), 404
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital_id,))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.put("/api/hospitals/<hospital_id>")
@@ -462,73 +429,12 @@ def update_hospital(hospital_id: str):
             hospital_id,
         ),
     )
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital_id,))
     fresh = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
-    fresh["doctor"] = doctor
-    return jsonify({"hospital": fresh, "doctor": doctor})
+    return jsonify({"hospital": fresh})
 
 
 @app.put("/api/doctors/<doctor_id>")
 def update_doctor(doctor_id: str):
-    data = request.get_json(force=True) or {}
-    doctor = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    if not doctor:
-        return jsonify({"error": "Doctor not found"}), 404
-    updates = {**doctor}
-    fields = ["name", "qualification", "specialization", "description", "latitude", "longitude"]
-    for f in fields:
-        if f in data:
-            updates[f] = data[f]
-    run(
-        """
-        UPDATE doctors SET name=?, qualification=?, specialization=?, description=?, latitude=?, longitude=? WHERE id=?
-        """,
-        (
-            updates.get("name"),
-            updates.get("qualification"),
-            updates.get("specialization"),
-            updates.get("description"),
-            updates.get("latitude"),
-            updates.get("longitude"),
-            doctor_id,
-        ),
-    )
-    fresh = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    return jsonify({"doctor": fresh})
-
-
-@app.get("/api/doctors/search")
-def search_doctors():
-    specialization = request.args.get("specialization")
-    user_lat = request.args.get("userLat")
-    user_lng = request.args.get("userLng")
-    doctors = get_all(
-        """
-        SELECT d.*, h.name AS hospital_name, h.address AS hospital_address, h.latitude AS hospital_latitude, h.longitude AS hospital_longitude
-        FROM doctors d JOIN hospitals h ON d.hospital_id = h.id
-        """
-    )
-    if specialization:
-        doctors = [d for d in doctors if specialization.lower() in (d.get("specialization") or "").lower()]
-    if user_lat and user_lng:
-        try:
-            u_lat = float(user_lat)
-            u_lng = float(user_lng)
-            enriched = []
-            for d in doctors:
-                lat = d.get("latitude") if d.get("latitude") is not None else d.get("hospital_latitude")
-                lng = d.get("longitude") if d.get("longitude") is not None else d.get("hospital_longitude")
-                if lat is not None and lng is not None:
-                    distance_km = haversine_km(u_lat, u_lng, float(lat), float(lng))
-                else:
-                    distance_km = None
-                d["distance_km"] = distance_km
-                enriched.append(d)
-            doctors = sorted(enriched, key=lambda x: x.get("distance_km") or 0)
-        except ValueError:
-            pass
-    return jsonify({"doctors": doctors})
-
 
 @app.post("/api/appointments")
 def create_appointment():
