@@ -266,8 +266,7 @@
       body.emergency = body.emergency === 'yes';
       body.recaptchaToken = getRecaptchaToken('hospital-register-recaptcha');
       try {
-        const { hospital, doctor } = await api.registerHospital(body);
-        hospital.doctor = doctor;
+        const { hospital } = await api.registerHospital(body);
         auth.setHospital(hospital);
         location.href = '/hospital/dashboard';
       } catch (err) {
@@ -287,8 +286,7 @@
       const body = Object.fromEntries(new FormData(form).entries());
       body.recaptchaToken = getRecaptchaToken('hospital-login-recaptcha');
       try {
-        const { hospital, doctor } = await api.loginHospital(body);
-        hospital.doctor = doctor;
+        const { hospital } = await api.loginHospital(body);
         auth.setHospital(hospital);
         location.href = '/hospital/dashboard';
       } catch (err) {
