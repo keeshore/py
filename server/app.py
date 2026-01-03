@@ -433,9 +433,6 @@ def update_hospital(hospital_id: str):
     return jsonify({"hospital": fresh})
 
 
-@app.put("/api/doctors/<doctor_id>")
-def update_doctor(doctor_id: str):
-
 @app.post("/api/appointments")
 def create_appointment():
     data = request.get_json(force=True) or {}
