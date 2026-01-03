@@ -2,12 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const initSqlJs = require('sql.js');
 
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'data.db');
+const dbPath = process.env.DB_PATH || (process.env.RENDER ? '/var/data/data.db' : path.join(__dirname, 'data.db'));
 
 let dbPromise = null;
 
 function persist(db) {
   const data = db.export();
+  fs.mkdirSync(path.dirname(dbPath), { recursive: true });
   fs.writeFileSync(dbPath, Buffer.from(data));
 }
 
