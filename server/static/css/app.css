@@ -3,8 +3,16 @@
   color: #ffffff !important;
 }
 
+a, a:hover, a:focus, a:visited {
+  color: #ffffff !important;
+}
+
+p, span, div, h1, h2, h3, h4, h5, h6, label, small {
+  color: #ffffff !important;
+}
+
 body { 
-  background: #0a0e27; 
+  background: #111d6a; 
   color: #ffffff;
   font-size: 15px;
   line-height: 1.6;
