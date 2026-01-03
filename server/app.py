@@ -436,19 +436,18 @@ def update_hospital(hospital_id: str):
 @app.post("/api/appointments")
 def create_appointment():
     data = request.get_json(force=True) or {}
-    if not data.get("userId") or not data.get("hospitalId") or not data.get("doctorId"):
+    if not data.get("userId") or not data.get("hospitalId"):
         return jsonify({"error": "Missing ids"}), 400
     appt_id = str(uuid.uuid4())
     run(
         """
-        INSERT INTO appointments (id, user_id, hospital_id, doctor_id, problem, status, preferred_time)
-        VALUES (?, ?, ?, ?, ?, 'Booked', ?)
+        INSERT INTO appointments (id, user_id, hospital_id, problem, status, preferred_time)
+        VALUES (?, ?, ?, ?, 'Booked', ?)
         """,
         (
             appt_id,
             data.get("userId"),
             data.get("hospitalId"),
-            data.get("doctorId"),
             data.get("problem"),
             data.get("preferredTime"),
         ),
@@ -461,7 +460,6 @@ def create_appointment():
 def list_appointments():
     user_id = request.args.get("userId")
     hospital_id = request.args.get("hospitalId")
-    doctor_id = request.args.get("doctorId")
     query = [
         "SELECT a.*, u.name AS user_name, u.email AS user_email, u.mobile AS user_mobile",
         "FROM appointments a",
@@ -475,9 +473,6 @@ def list_appointments():
     if hospital_id:
         query.append("AND a.hospital_id = ?")
         params.append(hospital_id)
-    if doctor_id:
-        query.append("AND a.doctor_id = ?")
-        params.append(doctor_id)
     rows = get_all("\n".join(query), params)
     return jsonify({"appointments": rows})
 
@@ -485,7 +480,6 @@ def list_appointments():
 @app.get("/api/appointments/today")
 def list_today_appointments():
     hospital_id = request.args.get("hospitalId")
-    doctor_id = request.args.get("doctorId")
     query = [
         "SELECT a.*, u.name AS user_name, u.email AS user_email, u.mobile AS user_mobile",
         "FROM appointments a",
@@ -496,9 +490,6 @@ def list_today_appointments():
     if hospital_id:
         query.append("AND a.hospital_id = ?")
         params.append(hospital_id)
-    if doctor_id:
-        query.append("AND a.doctor_id = ?")
-        params.append(doctor_id)
     rows = get_all("\n".join(query), params)
     return jsonify({"appointments": rows})
 
