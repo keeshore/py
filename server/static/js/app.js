@@ -34,18 +34,23 @@
   }
 
   async function request(path, { method = 'GET', body } = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    let data;
-    try { data = await res.json(); } catch (_err) { data = {}; }
-    if (!res.ok) {
-      const msg = data?.error || 'Request failed';
-      throw new Error(msg);
+    try {
+      const res = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined
+      });
+      let data;
+      try { data = await res.json(); } catch (_err) { data = {}; }
+      if (!res.ok) {
+        const msg = data?.error || `Request failed (${res.status})`;
+        throw new Error(msg);
+      }
+      return data;
+    } catch (err) {
+      console.error('API Error:', path, err);
+      throw err;
     }
-    return data;
   }
 
   const api = {
