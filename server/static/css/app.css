@@ -1,107 +1,162 @@
-* {
-  font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+/* ===============================
+   GLOBAL THEME VARIABLES
+================================ */
+:root {
+  --bg-main: #0a0e27;
+  --bg-card: #1a1f3a;
+  --bg-input: #0f1433;
+  --border-main: #2d3561;
+  --primary: #3b82f6;
+  --white: #ffffff;
+  --white-muted: #d0d6f2;
 }
 
-body { 
-  background: #0a0e27; 
-  color: #ffffff;
+/* ===============================
+   RESET & GLOBAL FONT
+================================ */
+* {
+  font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--white) !important; /* 🔥 FORCE PURE WHITE */
+}
+
+body {
+  background: var(--bg-main);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.7;
   letter-spacing: 0.3px;
 }
 
+/* ===============================
+   HEADINGS
+================================ */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
-  letter-spacing: 0.2px;
-  color: #ffffff;
+  letter-spacing: 0.3px;
 }
 
-.card { 
-  background: #1a1f3a; 
-  border-color: #2d3561;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-}
-
-.card-title { 
-  margin-bottom: 0.75rem;
-  font-weight: 600;
-  font-size: 1.1rem;
-  color: #ffffff;
-}
-
-.navbar-dark { 
+/* ===============================
+   NAVBAR
+================================ */
+.navbar-dark {
   background: linear-gradient(90deg, #0a0e27 0%, #0f1433 100%);
   font-weight: 500;
+  border-bottom: 1px solid var(--border-main);
 }
 
 .navbar-brand {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #ffffff;
+  letter-spacing: 1.2px;
 }
 
-.form-control, .form-select, .form-control:focus, .form-select:focus { 
-  background: #0f1433; 
-  color: #ffffff;
-  border-color: #2d3561;
-  font-size: 14px;
-  border-radius: 6px;
+/* ===============================
+   CARDS
+================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.55);
 }
 
-.btn {
-  font-weight: 500;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  color: #ffffff;
-}
-
-.btn-primary { 
-  background-color: #3b82f6; 
-  border-color: #3b82f6;
+.card-title {
   font-weight: 600;
-  color: #ffffff;
+  font-size: 1.15rem;
+  margin-bottom: 0.8rem;
 }
 
-.btn-outline-light { 
-  color: #ffffff; 
-  border-color: #ffffff;
-  font-weight: 500;
-}
-
-.btn-outline-secondary {
-  color: #ffffff;
-  border-color: #2d3561;
-}
-
-.alert { 
+/* ===============================
+   FORMS & INPUTS
+================================ */
+.form-control,
+.form-select {
+  background: var(--bg-input);
+  border: 1px solid var(--border-main);
   border-radius: 8px;
-  font-weight: 500;
-  color: #ffffff;
-  background-color: #1a1f3a;
+  font-size: 14px;
+  padding: 10px 12px;
 }
 
-.text-muted {
-  font-size: 13px;
-  letter-spacing: 0.2px;
-  color: #b0b8d4;
+.form-control::placeholder {
+  color: var(--white-muted);
 }
 
-textarea.form-control { 
-  min-height: 120px;
-  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, monospace;
-  background: #0f1433;
-  color: #ffffff;
+.form-control:focus,
+.form-select:focus {
+  background: var(--bg-input);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.15rem rgba(59, 130, 246, 0.35);
 }
 
+/* ===============================
+   TEXTAREA
+================================ */
+textarea.form-control {
+  min-height: 130px;
+  font-family: 'Segoe UI', monospace;
+}
+
+/* ===============================
+   LABELS
+================================ */
 label {
   font-weight: 500;
   font-size: 14px;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
+  margin-bottom: 6px;
 }
 
-#book-results .card, #doctor-today-list .card, #doctor-appt-list .card { 
-  background: #1a1f3a; 
-  border-color: #2d3561;
+/* ===============================
+   BUTTONS
+================================ */
+.btn {
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 8px 16px;
+  transition: all 0.25s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(59, 130, 246, 0.5);
+}
+
+.btn-outline-light {
+  border: 1px solid var(--white);
+}
+
+.btn-outline-secondary {
+  border: 1px solid var(--border-main);
+}
+
+/* ===============================
+   ALERTS
+================================ */
+.alert {
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* ===============================
+   MUTED TEXT (Readable but soft)
+================================ */
+.text-muted {
+  color: var(--white-muted) !important;
+  font-size: 13px;
+}
+
+/* ===============================
+   SPECIAL LIST CARDS
+================================ */
+#book-results .card,
+#doctor-today-list .card,
+#doctor-appt-list .card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-main);
 }
