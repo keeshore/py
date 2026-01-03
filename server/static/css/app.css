@@ -17,9 +17,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card { 
-  background: #3a3e5d; 
-  border-color: #2d3561;
-  box-shadow: 0 2px 8px rgba(30, 26, 26, 0.5);
+  background: #696d8d; 
+  border-color: #515778;
+  box-shadow: 0 2px 8px rgba(83, 74, 74, 0.5);
 }
 
 .card-title { 
@@ -30,7 +30,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar-dark { 
-  background: linear-gradient(90deg, #2b2e3e 0%, #4e526c 100%);
+  background: linear-gradient(90deg, #505368 0%, #4e526c 100%);
   font-weight: 500;
 }
 
@@ -78,19 +78,19 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   font-weight: 500;
   color: #ffffff;
-  background-color: #383c50;
+  background-color: #4d5063;
 }
 
 .text-muted {
   font-size: 13px;
   letter-spacing: 0.2px;
-  color: #b0b8d4;
+  color: #ffffff;
 }
 
 textarea.form-control { 
   min-height: 120px;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, monospace;
-  background: #3d415b;
+  background: #40434f;
   color: #ffffff;
 }
 
@@ -102,6 +102,6 @@ label {
 }
 
 #book-results .card, #doctor-today-list .card, #doctor-appt-list .card { 
-  background: #3c3f53; 
-  border-color: #2d3561;
+  background: #72768f; 
+  border-color: #36394e;
 }
