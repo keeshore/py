@@ -62,31 +62,16 @@ def init_db() -> None:
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
 
-        CREATE TABLE IF NOT EXISTS doctors (
-            id TEXT PRIMARY KEY,
-            hospital_id TEXT NOT NULL,
-            name TEXT NOT NULL,
-            qualification TEXT,
-            specialization TEXT,
-            description TEXT,
-            latitude REAL,
-            longitude REAL,
-            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (hospital_id) REFERENCES hospitals(id) ON DELETE CASCADE
-        );
-
         CREATE TABLE IF NOT EXISTS appointments (
             id TEXT PRIMARY KEY,
             user_id TEXT NOT NULL,
             hospital_id TEXT NOT NULL,
-            doctor_id TEXT NOT NULL,
             problem TEXT,
             status TEXT DEFAULT 'Booked',
             preferred_time TEXT,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-            FOREIGN KEY (hospital_id) REFERENCES hospitals(id) ON DELETE CASCADE,
-            FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+            FOREIGN KEY (hospital_id) REFERENCES hospitals(id) ON DELETE CASCADE
         );
 
         CREATE TABLE IF NOT EXISTS firstaid_chats (

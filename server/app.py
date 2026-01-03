@@ -207,16 +207,6 @@ def hospital_dashboard_page():
     )
 
 
-@app.route("/doctor/dashboard")
-def doctor_dashboard_page():
-    return render_template(
-        "doctor_dashboard.html",
-        page="doctor-dashboard",
-        api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
-    )
-
-
 @app.route("/hospital/<hospital_id>")
 def hospital_public_page(hospital_id: str):
     return render_template(
@@ -236,9 +226,6 @@ def health():
 @app.post("/api/users/register")
 def register_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
@@ -277,9 +264,6 @@ def register_user():
 @app.post("/api/users/login")
 def login_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     user = get_one("SELECT * FROM users WHERE email = ?", (data.get("email"),))
     if not user:
         return jsonify({"error": "Invalid credentials"}), 401
@@ -343,16 +327,12 @@ def update_user(user_id: str):
 @app.post("/api/hospitals/register")
 def register_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
-    if not data.get("name") or not data.get("email") or not data.get("password") or not data.get("doctorName"):
+    if not data.get("name") or not data.get("email") or not data.get("password"):
         return jsonify({"error": "Missing required fields"}), 400
     exists = get_one("SELECT id FROM hospitals WHERE email = ?", (data.get("email"),))
     if exists:
         return jsonify({"error": "Email already registered"}), 400
     hospital_id = str(uuid.uuid4())
-    doctor_id = str(uuid.uuid4())
     password_hash = generate_password_hash(data.get("password"))
     run(
         """
@@ -374,42 +354,19 @@ def register_hospital():
             data.get("longitude"),
         ),
     )
-    run(
-        """
-        INSERT INTO doctors (id, hospital_id, name, qualification, specialization, description, latitude, longitude)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            doctor_id,
-            hospital_id,
-            data.get("doctorName"),
-            data.get("doctorQualification"),
-            data.get("doctorSpecialization"),
-            data.get("doctorDescription"),
-            data.get("latitude"),
-            data.get("longitude"),
-        ),
-    )
     hospital = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
-    doctor = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.post("/api/hospitals/login")
 def login_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     hospital = get_one("SELECT * FROM hospitals WHERE email = ?", (data.get("email"),))
     if not hospital:
         return jsonify({"error": "Invalid credentials"}), 401
     if not check_password_hash(hospital["password_hash"], data.get("password", "")):
         return jsonify({"error": "Invalid credentials"}), 401
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital["id"],))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.get("/api/hospitals/<hospital_id>")
@@ -417,9 +374,7 @@ def get_hospital(hospital_id: str):
     hospital = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
     if not hospital:
         return jsonify({"error": "Hospital not found"}), 404
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital_id,))
-    hospital["doctor"] = doctor
-    return jsonify({"hospital": hospital, "doctor": doctor})
+    return jsonify({"hospital": hospital})
 
 
 @app.put("/api/hospitals/<hospital_id>")
@@ -462,90 +417,25 @@ def update_hospital(hospital_id: str):
             hospital_id,
         ),
     )
-    doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital_id,))
     fresh = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
-    fresh["doctor"] = doctor
-    return jsonify({"hospital": fresh, "doctor": doctor})
-
-
-@app.put("/api/doctors/<doctor_id>")
-def update_doctor(doctor_id: str):
-    data = request.get_json(force=True) or {}
-    doctor = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    if not doctor:
-        return jsonify({"error": "Doctor not found"}), 404
-    updates = {**doctor}
-    fields = ["name", "qualification", "specialization", "description", "latitude", "longitude"]
-    for f in fields:
-        if f in data:
-            updates[f] = data[f]
-    run(
-        """
-        UPDATE doctors SET name=?, qualification=?, specialization=?, description=?, latitude=?, longitude=? WHERE id=?
-        """,
-        (
-            updates.get("name"),
-            updates.get("qualification"),
-            updates.get("specialization"),
-            updates.get("description"),
-            updates.get("latitude"),
-            updates.get("longitude"),
-            doctor_id,
-        ),
-    )
-    fresh = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
-    return jsonify({"doctor": fresh})
-
-
-@app.get("/api/doctors/search")
-def search_doctors():
-    specialization = request.args.get("specialization")
-    user_lat = request.args.get("userLat")
-    user_lng = request.args.get("userLng")
-    doctors = get_all(
-        """
-        SELECT d.*, h.name AS hospital_name, h.address AS hospital_address, h.latitude AS hospital_latitude, h.longitude AS hospital_longitude
-        FROM doctors d JOIN hospitals h ON d.hospital_id = h.id
-        """
-    )
-    if specialization:
-        doctors = [d for d in doctors if specialization.lower() in (d.get("specialization") or "").lower()]
-    if user_lat and user_lng:
-        try:
-            u_lat = float(user_lat)
-            u_lng = float(user_lng)
-            enriched = []
-            for d in doctors:
-                lat = d.get("latitude") if d.get("latitude") is not None else d.get("hospital_latitude")
-                lng = d.get("longitude") if d.get("longitude") is not None else d.get("hospital_longitude")
-                if lat is not None and lng is not None:
-                    distance_km = haversine_km(u_lat, u_lng, float(lat), float(lng))
-                else:
-                    distance_km = None
-                d["distance_km"] = distance_km
-                enriched.append(d)
-            doctors = sorted(enriched, key=lambda x: x.get("distance_km") or 0)
-        except ValueError:
-            pass
-    return jsonify({"doctors": doctors})
+    return jsonify({"hospital": fresh})
 
 
 @app.post("/api/appointments")
 def create_appointment():
     data = request.get_json(force=True) or {}
-    if not data.get("userId") or not data.get("hospitalId") or not data.get("doctorId"):
+    if not data.get("userId") or not data.get("hospitalId"):
         return jsonify({"error": "Missing ids"}), 400
     appt_id = str(uuid.uuid4())
     run(
         """
-        INSERT INTO appointments (id, user_id, hospital_id, doctor_id, problem, status, preferred_time)
-        VALUES (?, ?, ?, ?, ?, 'Booked', ?)
+        INSERT INTO appointments (id, user_id, hospital_id, problem, status, preferred_time)
+        VALUES (?, ?, ?, ?, 'Booked', ?)
         """,
         (
             appt_id,
             data.get("userId"),
             data.get("hospitalId"),
-            data.get("doctorId"),
             data.get("problem"),
             data.get("preferredTime"),
         ),
@@ -558,7 +448,6 @@ def create_appointment():
 def list_appointments():
     user_id = request.args.get("userId")
     hospital_id = request.args.get("hospitalId")
-    doctor_id = request.args.get("doctorId")
     query = [
         "SELECT a.*, u.name AS user_name, u.email AS user_email, u.mobile AS user_mobile",
         "FROM appointments a",
@@ -572,9 +461,6 @@ def list_appointments():
     if hospital_id:
         query.append("AND a.hospital_id = ?")
         params.append(hospital_id)
-    if doctor_id:
-        query.append("AND a.doctor_id = ?")
-        params.append(doctor_id)
     rows = get_all("\n".join(query), params)
     return jsonify({"appointments": rows})
 
@@ -582,7 +468,6 @@ def list_appointments():
 @app.get("/api/appointments/today")
 def list_today_appointments():
     hospital_id = request.args.get("hospitalId")
-    doctor_id = request.args.get("doctorId")
     query = [
         "SELECT a.*, u.name AS user_name, u.email AS user_email, u.mobile AS user_mobile",
         "FROM appointments a",
@@ -593,9 +478,6 @@ def list_today_appointments():
     if hospital_id:
         query.append("AND a.hospital_id = ?")
         params.append(hospital_id)
-    if doctor_id:
-        query.append("AND a.doctor_id = ?")
-        params.append(doctor_id)
     rows = get_all("\n".join(query), params)
     return jsonify({"appointments": rows})
 

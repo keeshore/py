@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* ===============================
    GLOBAL THEME VARIABLES
 ================================ */
@@ -21,6 +22,24 @@
 
 body {
   background: var(--bg-main);
+=======
+* {
+  font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #ffffff !important;
+}
+
+a, a:hover, a:focus, a:visited {
+  color: #ffffff !important;
+}
+
+p, span, div, h1, h2, h3, h4, h5, h6, label, small {
+  color: #ffffff !important;
+}
+
+body { 
+  background: #111d6a; 
+  color: #ffffff;
+>>>>>>> d4e2714ca57e93fad44cd686cabe01d9f9415158
   font-size: 15px;
   line-height: 1.7;
   letter-spacing: 0.3px;
@@ -77,8 +96,15 @@ h1, h2, h3, h4, h5, h6 {
   padding: 10px 12px;
 }
 
+<<<<<<< HEAD
 .form-control::placeholder {
   color: var(--white-muted);
+=======
+.text-muted {
+  font-size: 13px;
+  letter-spacing: 0.2px;
+  color: #ffffff !important;
+>>>>>>> d4e2714ca57e93fad44cd686cabe01d9f9415158
 }
 
 .form-control:focus,

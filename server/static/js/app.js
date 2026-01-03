@@ -34,18 +34,23 @@
   }
 
   async function request(path, { method = 'GET', body } = {}) {
-    const res = await fetch(`${API_BASE}${path}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined
-    });
-    let data;
-    try { data = await res.json(); } catch (_err) { data = {}; }
-    if (!res.ok) {
-      const msg = data?.error || 'Request failed';
-      throw new Error(msg);
+    try {
+      const res = await fetch(`${API_BASE}${path}`, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body ? JSON.stringify(body) : undefined
+      });
+      let data;
+      try { data = await res.json(); } catch (_err) { data = {}; }
+      if (!res.ok) {
+        const msg = data?.error || `Request failed (${res.status})`;
+        throw new Error(msg);
+      }
+      return data;
+    } catch (err) {
+      console.error('API Error:', path, err);
+      throw err;
     }
-    return data;
   }
 
   const api = {
@@ -150,7 +155,6 @@
     const form = qs('#user-register-form');
     if (!form) return;
     const alertId = 'user-register-alert';
-    initRecaptcha('user-register-recaptcha');
     qs('#user-location-btn')?.addEventListener('click', () => {
       geoFill(form.elements['latitude'], form.elements['longitude']);
     });
@@ -158,7 +162,6 @@
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('user-register-recaptcha');
       body.emergency = body.emergency === 'yes';
       try {
         const { user } = await api.registerUser(body);
@@ -174,12 +177,10 @@
     const form = qs('#user-login-form');
     if (!form) return;
     const alertId = 'user-login-alert';
-    initRecaptcha('user-login-recaptcha');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('user-login-recaptcha');
       try {
         const { user } = await api.loginUser(body);
         auth.setUser(user);
@@ -255,7 +256,6 @@
     const form = qs('#hospital-register-form');
     if (!form) return;
     const alertId = 'hospital-register-alert';
-    initRecaptcha('hospital-register-recaptcha');
     qs('#hospital-location-btn')?.addEventListener('click', () => {
       geoFill(form.elements['latitude'], form.elements['longitude']);
     });
@@ -264,10 +264,8 @@
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
       body.emergency = body.emergency === 'yes';
-      body.recaptchaToken = getRecaptchaToken('hospital-register-recaptcha');
       try {
-        const { hospital, doctor } = await api.registerHospital(body);
-        hospital.doctor = doctor;
+        const { hospital } = await api.registerHospital(body);
         auth.setHospital(hospital);
         location.href = '/hospital/dashboard';
       } catch (err) {
@@ -280,15 +278,12 @@
     const form = qs('#hospital-login-form');
     if (!form) return;
     const alertId = 'hospital-login-alert';
-    initRecaptcha('hospital-login-recaptcha');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('hospital-login-recaptcha');
       try {
-        const { hospital, doctor } = await api.loginHospital(body);
-        hospital.doctor = doctor;
+        const { hospital } = await api.loginHospital(body);
         auth.setHospital(hospital);
         location.href = '/hospital/dashboard';
       } catch (err) {

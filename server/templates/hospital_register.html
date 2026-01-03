@@ -5,7 +5,7 @@
     <div class="card">
       <div class="card-body">
         <h2 class="card-title mb-3">Register Hospital / Clinic</h2>
-        <p class="text-muted">Creates hospital + doctor profile with geolocation.</p>
+        <p class="text-muted">Create your hospital profile with location details.</p>
         <div id="hospital-register-alert" class="alert d-none" role="alert"></div>
         <form id="hospital-register-form" class="row g-3">
           <div class="col-md-6">
@@ -58,24 +58,6 @@
           <div class="col-12">
             <button id="hospital-location-btn" type="button" class="btn btn-outline-primary btn-sm">Use current location</button>
           </div>
-          <hr class="mt-2 mb-2">
-          <div class="col-md-6">
-            <label class="form-label">Doctor Name</label>
-            <input name="doctorName" class="form-control" required>
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Doctor Qualification</label>
-            <input name="doctorQualification" class="form-control" placeholder="MBBS, MD">
-          </div>
-          <div class="col-md-6">
-            <label class="form-label">Doctor Specialization</label>
-            <input name="doctorSpecialization" class="form-control" placeholder="Eye, ENT, General">
-          </div>
-          <div class="col-12">
-            <label class="form-label">Doctor Description</label>
-            <textarea name="doctorDescription" class="form-control" rows="2">Experienced specialist ready to help.</textarea>
-          </div>
-          <div id="hospital-register-recaptcha" class="col-12"></div>
           <div class="col-12">
             <button class="btn btn-success" type="submit">Register Hospital</button>
           </div>
