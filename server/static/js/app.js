@@ -155,7 +155,6 @@
     const form = qs('#user-register-form');
     if (!form) return;
     const alertId = 'user-register-alert';
-    initRecaptcha('user-register-recaptcha');
     qs('#user-location-btn')?.addEventListener('click', () => {
       geoFill(form.elements['latitude'], form.elements['longitude']);
     });
@@ -163,7 +162,6 @@
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('user-register-recaptcha');
       body.emergency = body.emergency === 'yes';
       try {
         const { user } = await api.registerUser(body);
@@ -179,12 +177,10 @@
     const form = qs('#user-login-form');
     if (!form) return;
     const alertId = 'user-login-alert';
-    initRecaptcha('user-login-recaptcha');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('user-login-recaptcha');
       try {
         const { user } = await api.loginUser(body);
         auth.setUser(user);
@@ -260,7 +256,6 @@
     const form = qs('#hospital-register-form');
     if (!form) return;
     const alertId = 'hospital-register-alert';
-    initRecaptcha('hospital-register-recaptcha');
     qs('#hospital-location-btn')?.addEventListener('click', () => {
       geoFill(form.elements['latitude'], form.elements['longitude']);
     });
@@ -269,7 +264,6 @@
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
       body.emergency = body.emergency === 'yes';
-      body.recaptchaToken = getRecaptchaToken('hospital-register-recaptcha');
       try {
         const { hospital } = await api.registerHospital(body);
         auth.setHospital(hospital);
@@ -284,12 +278,10 @@
     const form = qs('#hospital-login-form');
     if (!form) return;
     const alertId = 'hospital-login-alert';
-    initRecaptcha('hospital-login-recaptcha');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       hideAlert(alertId);
       const body = Object.fromEntries(new FormData(form).entries());
-      body.recaptchaToken = getRecaptchaToken('hospital-login-recaptcha');
       try {
         const { hospital } = await api.loginHospital(body);
         auth.setHospital(hospital);

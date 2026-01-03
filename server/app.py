@@ -226,9 +226,6 @@ def health():
 @app.post("/api/users/register")
 def register_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
@@ -267,9 +264,6 @@ def register_user():
 @app.post("/api/users/login")
 def login_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     user = get_one("SELECT * FROM users WHERE email = ?", (data.get("email"),))
     if not user:
         return jsonify({"error": "Invalid credentials"}), 401
@@ -333,9 +327,6 @@ def update_user(user_id: str):
 @app.post("/api/hospitals/register")
 def register_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     if not data.get("name") or not data.get("email") or not data.get("password"):
         return jsonify({"error": "Missing required fields"}), 400
     exists = get_one("SELECT id FROM hospitals WHERE email = ?", (data.get("email"),))
@@ -370,9 +361,6 @@ def register_hospital():
 @app.post("/api/hospitals/login")
 def login_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     hospital = get_one("SELECT * FROM hospitals WHERE email = ?", (data.get("email"),))
     if not hospital:
         return jsonify({"error": "Invalid credentials"}), 401
