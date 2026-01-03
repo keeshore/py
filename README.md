@@ -89,7 +89,7 @@ RECAPTCHA_SECRET=your_recaptcha_secret
 
 Client (`client/.env`):
 ```
-VITE_API_BASE=http://localhost:4000/api
+VITE_API_BASE=https://py-backend-w56c.onrender.com/api
 VITE_RECAPTCHA_SITE_KEY=your_recaptcha_site_key
 VITE_GOOGLE_MAPS_API_KEY=your_maps_key
 ```
@@ -120,7 +120,7 @@ Environment overrides for Compose (optional):
 ```
 GEMINI_API_KEY=...
 RECAPTCHA_SECRET=...
-VITE_API_BASE=http://localhost:4000/api
+VITE_API_BASE=https://py-backend-w56c.onrender.com/api
 VITE_RECAPTCHA_SITE_KEY=...
 ```
 

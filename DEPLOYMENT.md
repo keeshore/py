@@ -57,7 +57,7 @@ This guide walks you through deploying the frontend to Netlify and backend to Re
 5. **Deploy:**
    - Click **Create Web Service**
    - Wait ~2–3 min for build/deploy
-   - Copy your service URL, e.g., `https://pulsecare-api.onrender.com`
+   - Copy your service URL, e.g., `https://py-backend-w56c.onrender.com`
 
 ---
 
@@ -79,11 +79,11 @@ This guide walks you through deploying the frontend to Netlify and backend to Re
    - Go to **Site settings** → **Build & deploy** → **Environment**
    - Add:
      ```
-     VITE_API_BASE=https://pulsecare-api.onrender.com/api
+   VITE_API_BASE=https://py-backend-w56c.onrender.com/api
      VITE_RECAPTCHA_SITE_KEY=6Lcg2D4sAAAAAPadVQ3DtJzFjb4kwy_qtTsyyeIP
      VITE_GOOGLE_MAPS_API_KEY=<optional>
      ```
-   - (Replace `pulsecare-api.onrender.com` with your actual Render URL)
+   - (Replace `py-backend-w56c.onrender.com` with your actual Render URL)
 
 5. **Deploy:**
    - Click **Deploy site**
@@ -116,7 +116,7 @@ This guide walks you through deploying the frontend to Netlify and backend to Re
 ## What You Get
 
 - **Frontend**: Live at `https://your-site.netlify.app` (updated on every GitHub push)
-- **Backend**: Live at `https://pulsecare-api.onrender.com` (updated on every GitHub push)
+- **Backend**: Live at `https://py-backend-w56c.onrender.com` (updated on every GitHub push)
 - **Database**: Persisted on Render disk at `/var/data/data.db`
 - **CI/CD**: Both auto-deploy when you `git push`
 
