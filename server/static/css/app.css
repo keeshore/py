@@ -2,12 +2,8 @@
   font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body { 
-<<<<<<< HEAD
-  background: #323654; 
-=======
-  background: #34384c; 
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
+body {
+  background: #323654;
   color: #ffffff;
   font-size: 15px;
   line-height: 1.6;
@@ -20,31 +16,21 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-.card { 
-<<<<<<< HEAD
-  background: #434a6f; 
+.card {
+  background: #434a6f;
   border-color: #60678a;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
-=======
-  background: #696d8d; 
-  border-color: #515778;
-  box-shadow: 0 2px 8px rgba(83, 74, 74, 0.5);
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
-.card-title { 
+.card-title {
   margin-bottom: 0.75rem;
   font-weight: 600;
   font-size: 1.1rem;
   color: #ffffff;
 }
 
-.navbar-dark { 
-<<<<<<< HEAD
+.navbar-dark {
   background: linear-gradient(90deg, #2c2f44 0%, #0f1433 100%);
-=======
-  background: linear-gradient(90deg, #505368 0%, #4e526c 100%);
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-weight: 500;
 }
 
@@ -55,16 +41,13 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-.form-control, .form-select, .form-control:focus, .form-select:focus { 
-<<<<<<< HEAD
-  background: #535b92; 
+.form-control,
+.form-select,
+.form-control:focus,
+.form-select:focus {
+  background: #535b92;
   color: #ffffff;
   border-color: #333750;
-=======
-  background: #464b67; 
-  color: #ffffff;
-  border-color: #323648;
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-size: 14px;
   border-radius: 6px;
 }
@@ -76,20 +59,15 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-.btn-primary { 
-<<<<<<< HEAD
-  background-color: #343e4f; 
+.btn-primary {
+  background-color: #343e4f;
   border-color: #3e495b;
-=======
-  background-color: #4b5a73; 
-  border-color: #6a7c98;
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-weight: 600;
   color: #ffffff;
 }
 
-.btn-outline-light { 
-  color: #ffffff; 
+.btn-outline-light {
+  color: #ffffff;
   border-color: #ffffff;
   font-weight: 500;
 }
@@ -99,15 +77,11 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #5f668e;
 }
 
-.alert { 
+.alert {
   border-radius: 8px;
   font-weight: 500;
   color: #ffffff;
-<<<<<<< HEAD
   background-color: #515988;
-=======
-  background-color: #4d5063;
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
 .text-muted {
@@ -116,14 +90,10 @@ h1, h2, h3, h4, h5, h6 {
   color: #ffffff;
 }
 
-textarea.form-control { 
+textarea.form-control {
   min-height: 120px;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, monospace;
-<<<<<<< HEAD
   background: #444c86;
-=======
-  background: #40434f;
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   color: #ffffff;
 }
 
@@ -134,14 +104,11 @@ label {
   color: #ffffff;
 }
 
-#book-results .card, #doctor-today-list .card, #doctor-appt-list .card { 
-<<<<<<< HEAD
-  background: #565f91; 
+#book-results .card,
+#doctor-today-list .card,
+#doctor-appt-list .card {
+  background: #565f91;
   border-color: #404979;
-=======
-  background: #72768f; 
-  border-color: #36394e;
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
 #doctor-calendar {

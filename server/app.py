@@ -95,15 +95,11 @@ def inject_analytics():
 
 @app.route("/")
 def landing_page():
-<<<<<<< HEAD
     return render_template(
         "landing.html",
         page="landing",
         api_base=app.config["API_BASE"],
     )
-=======
-    return render_template("landing.html", page="landing", api_base=app.config["API_BASE"])
->>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 
 
 @app.route("/user/register")
