@@ -19,6 +19,9 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config["JSON_SORT_KEYS"] = False
 app.config["API_BASE"] = os.environ.get("API_BASE", "/api")
 app.config["RECAPTCHA_SITE_KEY"] = os.environ.get("RECAPTCHA_SITE_KEY", "")
+app.config["GA_MEASUREMENT_ID"] = os.environ.get("GA_MEASUREMENT_ID", "")
+app.config["GTM_CONTAINER_ID"] = os.environ.get("GTM_CONTAINER_ID", "")
+app.config["GOOGLE_CALENDAR_EMBED_URL"] = os.environ.get("GOOGLE_CALENDAR_EMBED_URL", "")
 
 
 def calc_age(dob: str | None) -> int | None:
@@ -94,6 +97,14 @@ def ensure_db():
     if not getattr(app, "_db_initialized", False):
         init_db()
         app._db_initialized = True
+
+
+@app.context_processor
+def inject_analytics():
+    return {
+        "ga_measurement_id": app.config.get("GA_MEASUREMENT_ID", ""),
+        "gtm_container_id": app.config.get("GTM_CONTAINER_ID", ""),
+    }
 
 
 @app.route("/")
@@ -214,6 +225,7 @@ def doctor_dashboard_page():
         page="doctor-dashboard",
         api_base=app.config["API_BASE"],
         recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
+        google_calendar_embed_url=app.config["GOOGLE_CALENDAR_EMBED_URL"],
     )
 
 
