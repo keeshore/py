@@ -39,13 +39,19 @@
       headers: { 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     });
-    let data;
-    try { data = await res.json(); } catch (_err) { data = {}; }
+    let raw = '';
+    let data = null;
+    try {
+      raw = await res.text();
+      data = raw ? JSON.parse(raw) : null;
+    } catch (_err) {
+      data = null;
+    }
     if (!res.ok) {
-      const msg = data?.error || 'Request failed';
+      const msg = (data && data.error) || raw || `Request failed (${res.status})`;
       throw new Error(msg);
     }
-    return data;
+    return data || {};
   }
 
   const api = {

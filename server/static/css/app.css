@@ -3,7 +3,11 @@
 }
 
 body { 
+<<<<<<< HEAD
   background: #323654; 
+=======
+  background: #34384c; 
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   color: #ffffff;
   font-size: 15px;
   line-height: 1.6;
@@ -17,9 +21,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card { 
+<<<<<<< HEAD
   background: #434a6f; 
   border-color: #60678a;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+=======
+  background: #696d8d; 
+  border-color: #515778;
+  box-shadow: 0 2px 8px rgba(83, 74, 74, 0.5);
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
 .card-title { 
@@ -30,7 +40,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar-dark { 
+<<<<<<< HEAD
   background: linear-gradient(90deg, #2c2f44 0%, #0f1433 100%);
+=======
+  background: linear-gradient(90deg, #505368 0%, #4e526c 100%);
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-weight: 500;
 }
 
@@ -42,9 +56,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .form-control, .form-select, .form-control:focus, .form-select:focus { 
+<<<<<<< HEAD
   background: #535b92; 
   color: #ffffff;
   border-color: #333750;
+=======
+  background: #464b67; 
+  color: #ffffff;
+  border-color: #323648;
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-size: 14px;
   border-radius: 6px;
 }
@@ -57,8 +77,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-primary { 
+<<<<<<< HEAD
   background-color: #343e4f; 
   border-color: #3e495b;
+=======
+  background-color: #4b5a73; 
+  border-color: #6a7c98;
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   font-weight: 600;
   color: #ffffff;
 }
@@ -71,26 +96,34 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-outline-secondary {
   color: #ffffff;
-  border-color: #2d3561;
+  border-color: #5f668e;
 }
 
 .alert { 
   border-radius: 8px;
   font-weight: 500;
   color: #ffffff;
+<<<<<<< HEAD
   background-color: #515988;
+=======
+  background-color: #4d5063;
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
 .text-muted {
   font-size: 13px;
   letter-spacing: 0.2px;
-  color: #b0b8d4;
+  color: #ffffff;
 }
 
 textarea.form-control { 
   min-height: 120px;
   font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, monospace;
+<<<<<<< HEAD
   background: #444c86;
+=======
+  background: #40434f;
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
   color: #ffffff;
 }
 
@@ -102,8 +135,13 @@ label {
 }
 
 #book-results .card, #doctor-today-list .card, #doctor-appt-list .card { 
+<<<<<<< HEAD
   background: #565f91; 
   border-color: #404979;
+=======
+  background: #72768f; 
+  border-color: #36394e;
+>>>>>>> 3de2135c16680a6e0e788707b29d22d238c464c5
 }
 
 #doctor-calendar {
