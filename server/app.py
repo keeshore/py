@@ -231,6 +231,91 @@ def login_user():
         return jsonify({"error": f"Server error while logging in: {exc}"}), 500
 
 
-# ---- REST OF CODE (Hospitals, Doctors, Appointments, FirstAid) ----
-# ❌ NO OTHER LOGIC CHANGED
-# ✅ ONLY reCAPTCHA REMOVED
+@app.post("/api/hospitals/register")
+def register_hospital():
+    """Register a hospital and its primary doctor.
+
+    This version does NOT require reCAPTCHA. It expects the same
+    payload shape that the frontend sends from hospital_register.html.
+    """
+    try:
+        data = request.get_json(force=True) or {}
+
+        required = ["name", "email", "password", "doctorName"]
+        if any(not data.get(f) for f in required):
+            return jsonify({"error": "Missing required fields"}), 400
+
+        existing = get_one("SELECT id FROM hospitals WHERE email = ?", (data.get("email"),))
+        if existing:
+            return jsonify({"error": "Email already registered"}), 400
+
+        hospital_id = str(uuid.uuid4())
+        doctor_id = str(uuid.uuid4())
+        password_hash = generate_password_hash(data.get("password"))
+
+        run(
+            """
+            INSERT INTO hospitals (id, name, email, password_hash, emergency, morning_from, morning_to, evening_from, evening_to, address, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                hospital_id,
+                data.get("name"),
+                data.get("email"),
+                password_hash,
+                1 if data.get("emergency") else 0,
+                data.get("morningFrom"),
+                data.get("morningTo"),
+                data.get("eveningFrom"),
+                data.get("eveningTo"),
+                data.get("address"),
+                data.get("latitude"),
+                data.get("longitude"),
+            ),
+        )
+
+        run(
+            """
+            INSERT INTO doctors (id, hospital_id, name, qualification, specialization, description, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                doctor_id,
+                hospital_id,
+                data.get("doctorName"),
+                data.get("doctorQualification"),
+                data.get("doctorSpecialization"),
+                data.get("doctorDescription"),
+                data.get("latitude"),
+                data.get("longitude"),
+            ),
+        )
+
+        hospital = get_one("SELECT * FROM hospitals WHERE id = ?", (hospital_id,))
+        doctor = get_one("SELECT * FROM doctors WHERE id = ?", (doctor_id,))
+        hospital["doctor"] = doctor
+        return jsonify({"hospital": hospital, "doctor": doctor})
+    except Exception as exc:  # pragma: no cover - defensive
+        app.logger.exception("Error in register_hospital")
+        return jsonify({"error": f"Server error while registering hospital: {exc}"}), 500
+
+
+@app.post("/api/hospitals/login")
+def login_hospital():
+    """Login hospital by email/password and return hospital + doctor."""
+    try:
+        data = request.get_json(force=True) or {}
+        email = data.get("email")
+        password = data.get("password", "")
+
+        hospital = get_one("SELECT * FROM hospitals WHERE email = ?", (email,))
+        if not hospital or not check_password_hash(hospital["password_hash"], password):
+            return jsonify({"error": "Invalid credentials"}), 401
+
+        doctor = get_one("SELECT * FROM doctors WHERE hospital_id = ?", (hospital["id"],))
+        hospital["doctor"] = doctor
+        return jsonify({"hospital": hospital, "doctor": doctor})
+    except Exception as exc:  # pragma: no cover - defensive
+        app.logger.exception("Error in login_hospital")
+        return jsonify({"error": f"Server error while logging in hospital: {exc}"}), 500
+
