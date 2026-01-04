@@ -18,7 +18,6 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.config["JSON_SORT_KEYS"] = False
 app.config["API_BASE"] = os.environ.get("API_BASE", "/api")
-app.config["RECAPTCHA_SITE_KEY"] = os.environ.get("RECAPTCHA_SITE_KEY", "")
 
 
 def calc_age(dob: str | None) -> int | None:
@@ -39,25 +38,6 @@ def haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     dlon = to_rad(lon2 - lon1)
     a = math.sin(dlat / 2) ** 2 + math.cos(to_rad(lat1)) * math.cos(to_rad(lat2)) * math.sin(dlon / 2) ** 2
     return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-
-
-def verify_recaptcha(token: str | None) -> bool:
-    secret = os.environ.get("RECAPTCHA_SECRET")
-    if not secret:
-        return True
-    if not token:
-        return False
-    try:
-        resp = requests.post(
-            "https://www.google.com/recaptcha/api/siteverify",
-            data={"secret": secret, "response": token},
-            timeout=10,
-        )
-        data = resp.json()
-        return bool(data.get("success"))
-    except requests.RequestException:
-        return False
-
 
 def call_gemini(prompt: str) -> str:
     key = os.environ.get("GEMINI_API_KEY")
@@ -102,7 +82,6 @@ def landing_page():
         "landing.html",
         page="landing",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -112,7 +91,6 @@ def user_register_page():
         "user_register.html",
         page="user-register",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -123,7 +101,6 @@ def user_login_page():
         "user_login.html",
         page="user-login",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -132,8 +109,7 @@ def user_dashboard_page():
     return render_template(
         "user_dashboard.html",
         page="user-dashboard",
-        api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
+                api_base=app.config["API_BASE"],
     )
 
 
@@ -142,8 +118,7 @@ def user_book_page():
     return render_template(
         "book.html",
         page="book",
-        api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
+                api_base=app.config["API_BASE"],
     )
 
 
@@ -152,8 +127,7 @@ def user_rebook_page():
     return render_template(
         "rebook.html",
         page="rebook",
-        api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
+                api_base=app.config["API_BASE"],
     )
 
 
@@ -163,7 +137,6 @@ def user_firstaid_page():
         "firstaid.html",
         page="firstaid",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -173,7 +146,6 @@ def user_qr_page():
         "qr.html",
         page="qr",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -183,7 +155,6 @@ def hospital_register_page():
         "hospital_register.html",
         page="hospital-register",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -193,7 +164,6 @@ def hospital_login_page():
         "hospital_login.html",
         page="hospital-login",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -203,7 +173,6 @@ def hospital_dashboard_page():
         "hospital_dashboard.html",
         page="hospital-dashboard",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -213,7 +182,6 @@ def doctor_dashboard_page():
         "doctor_dashboard.html",
         page="doctor-dashboard",
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -224,7 +192,6 @@ def hospital_public_page(hospital_id: str):
         page="hospital-view",
         hospital_id=hospital_id,
         api_base=app.config["API_BASE"],
-        recaptcha_site_key=app.config["RECAPTCHA_SITE_KEY"],
     )
 
 
@@ -236,9 +203,6 @@ def health():
 @app.post("/api/users/register")
 def register_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     name = data.get("name")
     email = data.get("email")
     password = data.get("password")
@@ -277,9 +241,6 @@ def register_user():
 @app.post("/api/users/login")
 def login_user():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     user = get_one("SELECT * FROM users WHERE email = ?", (data.get("email"),))
     if not user:
         return jsonify({"error": "Invalid credentials"}), 401
@@ -343,9 +304,6 @@ def update_user(user_id: str):
 @app.post("/api/hospitals/register")
 def register_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     if not data.get("name") or not data.get("email") or not data.get("password") or not data.get("doctorName"):
         return jsonify({"error": "Missing required fields"}), 400
     exists = get_one("SELECT id FROM hospitals WHERE email = ?", (data.get("email"),))
@@ -399,9 +357,6 @@ def register_hospital():
 @app.post("/api/hospitals/login")
 def login_hospital():
     data = request.get_json(force=True) or {}
-    captcha_ok = verify_recaptcha(data.get("recaptchaToken"))
-    if not captcha_ok:
-        return jsonify({"error": "reCAPTCHA failed"}), 400
     hospital = get_one("SELECT * FROM hospitals WHERE email = ?", (data.get("email"),))
     if not hospital:
         return jsonify({"error": "Invalid credentials"}), 401
