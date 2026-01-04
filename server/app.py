@@ -170,56 +170,65 @@ def health():
 
 @app.post("/api/users/register")
 def register_user():
-    data = request.get_json(force=True) or {}
-    name = data.get("name")
-    email = data.get("email")
-    password = data.get("password")
+    try:
+        data = request.get_json(force=True) or {}
+        name = data.get("name")
+        email = data.get("email")
+        password = data.get("password")
 
-    if not name or not email or not password:
-        return jsonify({"error": "Missing required fields"}), 400
+        if not name or not email or not password:
+            return jsonify({"error": "Missing required fields"}), 400
 
-    exists = get_one("SELECT id FROM users WHERE email = ?", (email,))
-    if exists:
-        return jsonify({"error": "Email already registered"}), 400
+        exists = get_one("SELECT id FROM users WHERE email = ?", (email,))
+        if exists:
+            return jsonify({"error": "Email already registered"}), 400
 
-    user_id = str(uuid.uuid4())
-    password_hash = generate_password_hash(password)
-    age = calc_age(data.get("dob"))
+        user_id = str(uuid.uuid4())
+        password_hash = generate_password_hash(password)
+        age = calc_age(data.get("dob"))
 
-    run(
-        """
-        INSERT INTO users (id, name, email, mobile, password_hash, height, weight, dob, age, address, latitude, longitude)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            user_id,
-            name,
-            email,
-            data.get("mobile"),
-            password_hash,
-            data.get("height"),
-            data.get("weight"),
-            data.get("dob"),
-            age,
-            data.get("address"),
-            data.get("latitude"),
-            data.get("longitude"),
-        ),
-    )
+        run(
+            """
+            INSERT INTO users (id, name, email, mobile, password_hash, height, weight, dob, age, address, latitude, longitude)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                user_id,
+                name,
+                email,
+                data.get("mobile"),
+                password_hash,
+                data.get("height"),
+                data.get("weight"),
+                data.get("dob"),
+                age,
+                data.get("address"),
+                data.get("latitude"),
+                data.get("longitude"),
+            ),
+        )
 
-    user = get_one("SELECT * FROM users WHERE id = ?", (user_id,))
-    return jsonify({"user": user})
+        user = get_one("SELECT * FROM users WHERE id = ?", (user_id,))
+        return jsonify({"user": user})
+    except Exception as exc:  # pragma: no cover - defensive
+        # Log full traceback to the Flask logger for debugging
+        app.logger.exception("Error in register_user")
+        return jsonify({"error": f"Server error while registering user: {exc}"}), 500
 
 
 @app.post("/api/users/login")
 def login_user():
-    data = request.get_json(force=True) or {}
-    user = get_one("SELECT * FROM users WHERE email = ?", (data.get("email"),))
+    try:
+        data = request.get_json(force=True) or {}
+        user = get_one("SELECT * FROM users WHERE email = ?", (data.get("email"),))
 
-    if not user or not check_password_hash(user["password_hash"], data.get("password", "")):
-        return jsonify({"error": "Invalid credentials"}), 401
+        if not user or not check_password_hash(user["password_hash"], data.get("password", "")):
+            return jsonify({"error": "Invalid credentials"}), 401
 
-    return jsonify({"user": user})
+        return jsonify({"user": user})
+    except Exception as exc:  # pragma: no cover - defensive
+        app.logger.exception("Error in login_user")
+        return jsonify({"error": f"Server error while logging in: {exc}"}), 500
 
 
 # ---- REST OF CODE (Hospitals, Doctors, Appointments, FirstAid) ----
