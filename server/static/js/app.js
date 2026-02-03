@@ -20,6 +20,72 @@
     clear() { storage.remove('user'); storage.remove('hospital'); }
   };
 
+  function initThemeToggle() {
+    const btn = qs('#theme-toggle');
+    if (!btn) return;
+    const root = document.documentElement;
+    const key = 'theme';
+
+    const apply = (t) => {
+      if (t === 'light') root.setAttribute('data-theme', 'light');
+      else if (t === 'hospital') root.setAttribute('data-theme', 'hospital');
+      else root.removeAttribute('data-theme');
+      const label = t === 'hospital' ? 'Hospital' : (t === 'light' ? 'Light' : 'Dark');
+      btn.textContent = `Theme: ${label}`;
+    };
+
+    const saved = storage.get(key);
+    const initial = saved === 'light' || saved === 'dark' || saved === 'hospital' ? saved : 'dark';
+    apply(initial);
+
+    btn.addEventListener('click', () => {
+      const attr = root.getAttribute('data-theme');
+      const current = attr === 'light' ? 'light' : (attr === 'hospital' ? 'hospital' : 'dark');
+      const next = current === 'dark' ? 'light' : (current === 'light' ? 'hospital' : 'dark');
+      storage.set(key, next);
+      apply(next);
+    });
+  }
+
+  function initTilt3D() {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const els = qsa('[data-tilt]');
+    if (!els.length) return;
+
+    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const setVars = (el, x, y) => {
+      el.style.setProperty('--mx', `${x}%`);
+      el.style.setProperty('--my', `${y}%`);
+    };
+
+    els.forEach((el) => {
+      // Ensure positioning for ::after light sweep
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      el.style.transformOrigin = 'center';
+
+      const strength = 10; // degrees
+
+      function onMove(e) {
+        const r = el.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        const rx = clamp((0.5 - py) * strength * 2, -strength, strength);
+        const ry = clamp((px - 0.5) * strength * 2, -strength, strength);
+        setVars(el, px * 100, py * 100);
+        el.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg)`;
+      }
+
+      function onLeave() {
+        el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg)';
+        setVars(el, 50, 50);
+      }
+
+      el.addEventListener('mousemove', onMove);
+      el.addEventListener('mouseleave', onLeave);
+      onLeave();
+    });
+  }
+
   function showAlert(id, type, message) {
     const el = qs(`#${id}`);
     if (!el) return;
@@ -717,6 +783,8 @@
 
   function initFirstPageRouting() {
     const page = document.body.dataset.page;
+    initThemeToggle();
+    initTilt3D();
     hydrateBadges();
     if (page === 'user-register') initUserRegister();
     if (page === 'user-login') initUserLogin();
