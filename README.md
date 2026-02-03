@@ -53,7 +53,7 @@ This is a Flask server app (dynamic pages + `/api/*` + SQLite). It should be dep
 Environment variables (Render → Environment):
 - `PORT` (Render sets this automatically)
 - `API_BASE=/api`
-- `DB_PATH=./server/data.db` (SQLite file; note: free tiers may have ephemeral disk)
+- `DB_PATH=./server/data_v2.db` (SQLite file; note: free tiers may have ephemeral disk)
 - Optional: `GEMINI_API_KEY`, `RECAPTCHA_SECRET`, `RECAPTCHA_SITE_KEY`, `GA_MEASUREMENT_ID`, `GTM_CONTAINER_ID`, `GOOGLE_CALENDAR_EMBED_URL`
 
 There is also a ready config file: `render.yaml`.
@@ -78,7 +78,7 @@ Netlify is for static sites; it cannot run this Flask server + SQLite app direct
 ### Environment Variables (server/.env)
 ```
 PORT=4000
-DB_PATH=./data.db
+DB_PATH=./data_v2.db
 GEMINI_API_KEY=your_gemini_key
 RECAPTCHA_SECRET=your_recaptcha_secret
 RECAPTCHA_SITE_KEY=your_recaptcha_site_key
@@ -115,5 +115,6 @@ API_BASE=/api
 
 ## Notes
 - SQLite file lives at `DB_PATH`; schema auto-creates on first request.
+- To wipe data and recreate schema locally, run: `python server/reset_db.py` (stop the server first on Windows).
 - Gemini integration is optional; missing API key returns a friendly message.
 - Legacy React + Node assets remain for reference but Flask stack is the supported path now.

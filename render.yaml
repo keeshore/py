@@ -11,5 +11,5 @@ services:
       - key: API_BASE
         value: "/api"
       - key: DB_PATH
-        value: "./server/data.db"
+        value: "./server/data_v2.db"
     healthCheckPath: /api/health
