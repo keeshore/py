@@ -3,7 +3,7 @@ import sqlite3
 from typing import Any, Dict, Iterable, List, Optional
 from flask import g
 
-DB_PATH = os.environ.get("DB_PATH") or os.path.join(os.path.dirname(__file__), "data_v2.db")
+DB_PATH = os.environ.get("DB_PATH") or os.path.join(os.path.dirname(__file__), "data.db")
 
 
 def get_db() -> sqlite3.Connection:

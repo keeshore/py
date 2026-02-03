@@ -7,6 +7,8 @@ dist/
 .vscode/
 .idea/
 server/data.db
+server/*.db
+*.db
 __pycache__/
 *.pyc
 venv/
