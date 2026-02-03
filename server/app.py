@@ -20,7 +20,7 @@ CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.config["JSON_SORT_KEYS"] = False
 app.config["API_BASE"] = os.environ.get("API_BASE", "/api")
 app.config["PORT"] = int(os.environ.get("PORT", "4000"))
-app.config["HOST"] = os.environ.get("HOST", "127.0.0.1")
+app.config["HOST"] = os.environ.get("HOST", "0.0.0.0")
 
 app.config["GA_MEASUREMENT_ID"] = os.environ.get("GA_MEASUREMENT_ID", "")
 app.config["GTM_CONTAINER_ID"] = os.environ.get("GTM_CONTAINER_ID", "")

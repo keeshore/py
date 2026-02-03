@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: pulsecare
+    env: python
+    plan: free
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: gunicorn --chdir server wsgi:app
+    envVars:
+      - key: PORT
+        value: "4000"
+      - key: API_BASE
+        value: "/api"
+      - key: DB_PATH
+        value: "./server/data.db"
+    healthCheckPath: /api/health
